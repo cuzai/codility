@@ -6,12 +6,12 @@ import timeit
 
 def get_test(test_mode):
     if test_mode :
-        N = random.randint(0, 100000)
-        A = [random.randint(0, 2147483647) for _ in range(N)]
+        N = 1000000
+        S = [random.choice(["(", ")"]) for _ in range(N)]
     else :
-        N = random.randint(0, 5)
-        A = [random.randint(0, 5) for _ in range(N)]
-    return A
+        N = 4
+        S = [random.choice(["(", ")"]) for _ in range(N)]
+    return "".join(S)
 
 def test(test_mode=False):
     test_li = []
@@ -19,8 +19,8 @@ def test(test_mode=False):
     time_spent = 0
     for _ in range(100):
         while True:
-            A = get_test(test_mode)  ###############
-            test = A  ############################
+            S = get_test(test_mode)  ###############
+            test = S  ############################
             if test not in test_li:
                 test_li.append(test)
                 break
@@ -31,11 +31,11 @@ def test(test_mode=False):
                 return
         print("got_test")
         start = time.time()
-        result = solution(A)  ################
+        result = solution(S)  ################
         end = time.time()
 
         if not test_mode:
-            print(f"A : {A} = {result} : {end - start}")  ################
+            print(f"S : {S} = {result} : {end - start}")  ################
         if test_mode:
             print("\r", _, end="")
 
@@ -47,49 +47,24 @@ def test(test_mode=False):
 
 
 
-def solution(A):
-    disc = sorted([[n-a, n+a]  for n, a in enumerate(A)])
-    print(disc)
-    N = len(disc)
-    val = 0
-    for i in range(N-1) :
-        if val > 10000000 :
-            return -1
-        # find x <= target
-        target = disc[i][1]
-        start = i+1
-        end = N-1
+def solution(S):
+    open_bracket = []
 
-        if target < disc[start][0] :
-            continue
-        elif target >= disc[end][0] :
-            val += end-start+1
-            continue
-        
-        while True :
-            mid = (start+end)//2
-            if target >= disc[mid][0] and target < disc[mid+1][0] :
-                val += mid- (i+1) + 1
-                break
-            if target >= disc[mid][0] :
-                start = mid + 1
-            elif target < disc[mid][0] : 
-                end = mid -1
-
-    val_val = 0
-    for i in range(N) :
-        for j in range(i+1, N) :
-            if disc[i][1] >= disc[j][0] :
-                val_val += 1
-    print(val_val)
-
-    return val
+    for s in S :
+        if s == "(" : open_bracket.append(s)
+        else : 
+            try :
+                del open_bracket[-1]
+            except :
+                return 0
+    if len(open_bracket) == 0 : return 1
+    else : return 0
 
 
 
-A = [0, 1, 2, 3, 0]
-print(solution(A))
-# print(test(test_mode=False))
+S = "(()(())())"
+# print(solution(S))
+print(test(test_mode=True))
 
 
 
